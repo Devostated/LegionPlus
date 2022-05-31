@@ -325,7 +325,8 @@ enum class AnimExportFormat_t
 {
 	SEAnim,
 	Cast,
-	RAnim
+	RAnim,
+	SMD
 };
 
 enum class ImageExportFormat_t

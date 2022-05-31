@@ -25,7 +25,42 @@ namespace Assets::Exporters
 
 	bool ValveSMD::ExportAnimation(const Animation& Animation, const string& Path)
 	{
-		return false;
+		auto Writer = IO::StreamWriter(IO::File::Create(Path));
+
+		Writer.WriteLine(
+			"version 1\n"
+			"nodes"
+		);
+
+		uint32_t BoneIndex = 0;
+		uint32_t FrameIndex = 0;
+
+		for (auto& Bone : Animation.Bones)
+		{
+			Writer.WriteLineFmt("%d \"%s\" %d", BoneIndex, (char*)Bone.Name(), Bone.Parent());
+			BoneIndex++;
+		}
+
+		Writer.WriteLine(
+			"end\n"
+			"skeleton"
+		);
+
+		for (int i = 0; i < Animation.FrameCount(true); i++)
+		{
+			BoneIndex = 0;
+			Writer.WriteLineFmt("time %d", FrameIndex);
+			for (auto& Bone : Animation.Bones)
+			{
+				Writer.WriteLineFmt("%d %f %f %f %f %f %f", BoneIndex, 0, 0, 0, 0, 0, 0); // Missing Position and Rotation in rad for each boneindex and each frame
+				BoneIndex++;
+			}
+			FrameIndex++;
+		}
+
+		Writer.WriteLine("end");
+
+		return true;
 	}
 
 	bool ValveSMD::ExportModel(const Model& Model, const string& Path)
